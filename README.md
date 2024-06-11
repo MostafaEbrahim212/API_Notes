@@ -24,50 +24,49 @@ A simple project for managing user authentication (login, register, logout) and 
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/your-repo.git
-Configure environment variables:
+   ```
 
-cp .env.example .env
-# Edit .env file and add necessary configurations (database, JWT secret, etc.)
-Run migrations and seeders:
+2. Configure environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env file and add necessary configurations (database, JWT secret, etc.)
+   ```
 
-php artisan migrate --seed
-Start the server:
+3. Run migrations and seeders:
+   ```bash
+   php artisan migrate --seed
+   ```
 
-php artisan serve
-Usage
-Register a new user.
-Login with your credentials.
-Create, read, update, or delete notes.
-View and edit your profile.
-Logout when done.
-Endpoints
--POST /register: Register a new user.
+4. Start the server:
+   ```bash
+   php artisan serve
+   ```
 
--POST /login: Login with credentials and obtain an access token.
+## Usage
 
--POST /logout: Logout and invalidate the access token.
+1. Register a new user.
+2. Login with your credentials.
+3. Create, read, update, or delete notes.
+4. View and edit your profile.
+5. Logout when done.
 
--GET /user: Get the user's profile information.
+## Endpoints
 
--PATCH /user: Update the user's profile.
+- **POST /register**: Register a new user.
+- **POST /login**: Login with credentials and obtain an access token.
+- **POST /logout**: Logout and invalidate the access token.
+- **GET /user**: Get the user's profile information.
+- **PATCH /user**: Update the user's profile.
+- **GET /notes**: Get all notes for the authenticated user.
+- **GET /notes/{id}**: Get a specific note by ID.
+- **POST /notes**: Create a new note.
+- **PATCH /notes/{id}**: Update an existing note.
+- **DELETE /notes/{id}**: Delete a note.
 
--GET /notes: Get all notes for the authenticated user.
+## Contributing
 
--GET /notes/{id}: Get a specific note by ID.
-
--POST /notes: Create a new note.
-
--PATCH /notes/{id}: Update an existing note.
-
--DELETE /notes/{id}: Delete a note.
-
-Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
-License
+## License
+
 This project is licensed under the MIT License.
-
-css
-Copy code
-
-Feel free to customize it further according to your preferences!
