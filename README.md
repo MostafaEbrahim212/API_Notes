@@ -52,15 +52,15 @@ A simple project for managing user authentication (login, register, logout) and 
 
 ## Endpoints
 
-- **POST /register**: Register a new user.
-- **POST /login**: Login with credentials and obtain an access token.
-- **POST /logout**: Logout and invalidate the access token.
-- **GET /user**: Get the user's profile information.
-- **GET /notes**: Get all notes for the authenticated user.
-- **GET /notes/{id}**: Get a specific note by ID.
-- **POST /notes**: Create a new note.
-- **PATCH /notes/{id}**: Update an existing note.
-- **DELETE /notes/{id}**: Delete a note.
+- **POST http://127.0.0.1:8000/api/register**: Register a new user.
+- **POST http://127.0.0.1:8000/api/login**: Login with credentials and obtain an access token.
+- **POST http://127.0.0.1:8000/api/logout**: Logout and invalidate the access token.
+- **GET http://127.0.0.1:8000/api/user**: Get the user's profile information.
+- **GET http://127.0.0.1:8000/api/notes**: Get all notes for the authenticated user.
+- **GET http://127.0.0.1:8000/api/notes/{id}**: Get a specific note by ID.
+- **POST http://127.0.0.1:8000/api/notes**: Create a new note.
+- **PATCH http://127.0.0.1:8000/api/notes/{id}**: Update an existing note.
+- **DELETE http://127.0.0.1:8000/api/notes/{id}**: Delete a note.
 
 ## Contributing
 
