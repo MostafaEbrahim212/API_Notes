@@ -47,7 +47,7 @@ A simple project for managing user authentication (login, register, logout) and 
 1. Register a new user.
 2. Login with your credentials.
 3. Create, read, update, or delete notes.
-4. View and edit your profile.
+4. View your profile.
 5. Logout when done.
 
 ## Endpoints
@@ -56,7 +56,6 @@ A simple project for managing user authentication (login, register, logout) and 
 - **POST /login**: Login with credentials and obtain an access token.
 - **POST /logout**: Logout and invalidate the access token.
 - **GET /user**: Get the user's profile information.
-- **PATCH /user**: Update the user's profile.
 - **GET /notes**: Get all notes for the authenticated user.
 - **GET /notes/{id}**: Get a specific note by ID.
 - **POST /notes**: Create a new note.
