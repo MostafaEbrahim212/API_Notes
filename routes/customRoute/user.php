@@ -15,3 +15,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('profile', [AuthController::class, 'profile']);
     route::apiResource('notes', NotesController::class);
 });
+
+
