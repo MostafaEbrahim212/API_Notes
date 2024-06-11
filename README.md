@@ -42,15 +42,25 @@ View and edit your profile.
 Logout when done.
 Endpoints
 -POST /register: Register a new user.
+
 -POST /login: Login with credentials and obtain an access token.
+
 -POST /logout: Logout and invalidate the access token.
+
 -GET /user: Get the user's profile information.
+
 -PATCH /user: Update the user's profile.
+
 -GET /notes: Get all notes for the authenticated user.
+
 -GET /notes/{id}: Get a specific note by ID.
+
 -POST /notes: Create a new note.
+
 -PATCH /notes/{id}: Update an existing note.
+
 -DELETE /notes/{id}: Delete a note.
+
 Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests.
 
