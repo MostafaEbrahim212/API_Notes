@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Resources\NoteResource;
 use App\Models\Note;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class NotesController extends Controller
 {
@@ -15,24 +17,22 @@ class NotesController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $notes = $user->notes;
-        // return every note with notes resource
-        $notes = $notes->map(function ($note) {
-            return new NoteResource($note);
-        });
-        if ($notes->count() > 0) {
-            return res_data(
-                $notes,
-                'notes found',
-                200
-            );
-        } else {
-            return res_data(
-                [],
-                'there is no notes yet',
-                200
-            );
+        try {
+            $user = Auth::user();
+            $notes = $user->notes;
+            // return every note with notes resource
+            $notes = $notes->map(function ($note) {
+                return new NoteResource($note);
+            });
+
+            if ($notes->count() > 0) {
+                return ApiResponseHelper::resData($notes, 'Notes found', 200);
+            } else {
+                return ApiResponseHelper::resData([], 'No notes found', 200);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Notes index error: ', ['error' => $e->getMessage()]);
+            return ApiResponseHelper::resData([], 'Internal Server Error', 500);
         }
     }
 
@@ -41,17 +41,22 @@ class NotesController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'content' => 'required|string'
-        ]);
-        $request['user_id'] = Auth::id();
-        $note = Note::create($request->all());
-        return res_data(
-            new NoteResource($note),
-            'Note created successfully',
-            201
-        );
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string',
+                'content' => 'required|string'
+            ]);
+
+            $validated['user_id'] = Auth::id();
+            $note = Note::create($validated);
+
+            return ApiResponseHelper::resData(new NoteResource($note), 'Note created successfully', 201);
+        } catch (ValidationException $e) {
+            return ApiResponseHelper::resData($e->errors(), 'Validation Error', 422);
+        } catch (\Exception $e) {
+            \Log::error('Note store error: ', ['error' => $e->getMessage()]);
+            return ApiResponseHelper::resData([], 'Internal Server Error', 500);
+        }
     }
 
     /**
@@ -59,23 +64,18 @@ class NotesController extends Controller
      */
     public function show(string $id)
     {
-        $user = Auth::user();
-        $note = Note::where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
+        try {
+            $user = Auth::user();
+            $note = Note::where('id', $id)->where('user_id', $user->id)->first();
 
-        if ($note) {
-            return res_data(
-                new NoteResource($note),
-                'note found',
-                200
-            );
-        } else {
-            return res_data(
-                [],
-                'note not found or you do not have access to this note',
-                404
-            );
+            if ($note) {
+                return ApiResponseHelper::resData(new NoteResource($note), 'Note found', 200);
+            } else {
+                return ApiResponseHelper::resData([], 'Note not found or you do not have access to this note', 404);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Note show error: ', ['error' => $e->getMessage()]);
+            return ApiResponseHelper::resData([], 'Internal Server Error', 500);
         }
     }
 
@@ -84,27 +84,26 @@ class NotesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'required|string',
-            'content' => 'required|string'
-        ]);
-        $user = Auth::user();
-        $note = Note::where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
-        if ($note) {
-            $note->update($request->all());
-            return res_data(
-                new NoteResource($note),
-                'note updated successfully',
-                200
-            );
-        } else {
-            return res_data(
-                [],
-                'note not found or you do not have access to this note',
-                404
-            );
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string',
+                'content' => 'required|string'
+            ]);
+
+            $user = Auth::user();
+            $note = Note::where('id', $id)->where('user_id', $user->id)->first();
+
+            if ($note) {
+                $note->update($validated);
+                return ApiResponseHelper::resData(new NoteResource($note), 'Note updated successfully', 200);
+            } else {
+                return ApiResponseHelper::resData([], 'Note not found or you do not have access to this note', 404);
+            }
+        } catch (ValidationException $e) {
+            return ApiResponseHelper::resData($e->errors(), 'Validation Error', 422);
+        } catch (\Exception $e) {
+            \Log::error('Note update error: ', ['error' => $e->getMessage()]);
+            return ApiResponseHelper::resData([], 'Internal Server Error', 500);
         }
     }
 
@@ -113,23 +112,19 @@ class NotesController extends Controller
      */
     public function destroy(string $id)
     {
-        $user = Auth::user();
-        $note = Note::where('id', $id)
-            ->where('user_id', $user->id)
-            ->first();
-        if ($note) {
-            $note->delete();
-            return res_data(
-                [],
-                'note deleted successfully',
-                200
-            );
-        } else {
-            return res_data(
-                [],
-                'note not found or you do not have access to this note',
-                404
-            );
+        try {
+            $user = Auth::user();
+            $note = Note::where('id', $id)->where('user_id', $user->id)->first();
+
+            if ($note) {
+                $note->delete();
+                return ApiResponseHelper::resData([], 'Note deleted successfully', 200);
+            } else {
+                return ApiResponseHelper::resData([], 'Note not found or you do not have access to this note', 404);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Note destroy error: ', ['error' => $e->getMessage()]);
+            return ApiResponseHelper::resData([], 'Internal Server Error', 500);
         }
     }
 }

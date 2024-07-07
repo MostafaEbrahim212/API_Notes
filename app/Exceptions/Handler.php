@@ -23,8 +23,45 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->renderable(function (Throwable $e) {
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => $e->errors(),
+                ], 422);
+            } elseif ($e instanceof \Illuminate\Auth\AuthenticationException) {
+                return response()->json([
+                    'message' => 'Unauthenticated.',
+                ], 401);
+            } elseif ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return response()->json([
+                    'message' => 'This action is unauthorized.',
+                ], 403);
+            } elseif ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+                return response()->json([
+                    'message' => 'Resource not found.',
+                ], 404);
+            } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                return response()->json([
+                    'message' => 'Resource not found.',
+                ], 404);
+            } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+                return response()->json([
+                    'message' => 'Method not allowed.',
+                ], 405);
+            } elseif ($e instanceof \Illuminate\Database\QueryException) {
+                return response()->json([
+                    'message' => 'Database error.',
+                ], 500);
+            } elseif ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
+                return response()->json([
+                    'message' => 'Server error.',
+                ], 500);
+            } elseif ($e instanceof \Throwable) {
+                return response()->json([
+                    'message' => 'Server error.',
+                ], 500);
+            }
         });
     }
 }
