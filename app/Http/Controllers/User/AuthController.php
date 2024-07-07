@@ -32,8 +32,8 @@ class AuthController extends Controller
             $validated['password'] = bcrypt($request->password);
             $user = User::create($validated);
             $token = $this->createToken($user);
-
             return ApiResponseHelper::resData(['token' => $token], 'User created successfully', 201);
+
         } catch (ValidationException $e) {
             return ApiResponseHelper::resData($e->errors(), 'Validation Error', 422);
         } catch (\Exception $e) {
@@ -56,21 +56,20 @@ class AuthController extends Controller
                 // Generate token
                 $user = Auth::user();
                 $token = $user->createToken('authToken')->plainTextToken;
-
-                // Return success response
                 return ApiResponseHelper::resData(['token' => $token], 'Login successful', 200);
             } else {
-                throw new UnauthorizedHttpException('Invalid credentials provided.');
+                // Return 401 Unauthorized response
+                return ApiResponseHelper::resData([], 'Invalid credentials provided.', 401);
             }
         } catch (ValidationException $e) {
             return ApiResponseHelper::resData($e->errors(), 'Validation Error', 422);
-        } catch (UnauthorizedHttpException $e) {
-            return ApiResponseHelper::resData([], $e->getMessage(), 401);
         } catch (\Exception $e) {
             \Log::error('Login error: ', ['error' => $e->getMessage()]);
             return ApiResponseHelper::resData([], 'Internal Server Error', 500);
         }
     }
+
+
 
     public function logout(Request $request)
     {
